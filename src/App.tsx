@@ -1,26 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
 
-function App() {
+import { Container, CssBaseline } from "@material-ui/core";
+
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
+import Navbar from "./components/navbar.component";
+
+import { routes } from "./data/routes";
+
+const theme = createMuiTheme({
+  palette: {
+    type: "dark"
+  }
+});
+
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Router>
+        <Navbar title={"Technologies"} />
+        <Switch>
+          {routes.map(
+            ({ pathname, component: Component, exact }, i: number) => (
+              <Route
+                key={i}
+                exact={exact}
+                path={pathname}
+                render={props => (
+                  <Container>
+                    <Component {...props} />
+                  </Container>
+                )}
+              />
+            )
+          )}
+        </Switch>
+      </Router>
+    </ThemeProvider>
   );
-}
+};
 
 export default App;
