@@ -7,6 +7,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Technology } from "../models/technology";
+import { useParams } from "react-router-dom";
 import CardTechnology from "../components/card.component";
 
 const useStyles = makeStyles(theme => ({
@@ -24,19 +25,28 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Home: React.FC = () => {
+const TechnologyID: React.FC<Technology> = props => {
+  const { tech_id } = useParams();
   const classes = useStyles();
 
   const [loading, setLoading] = useState(true);
-  const [technologies, setTecnologies] = useState<Technology[]>([]);
+  const [technology, setTecnology] = useState<Technology>({
+    _id: props._id,
+    name: props.name,
+    description: props.description,
+    logo: props.logo,
+    tags: props.tags,
+    createdAt: props.createdAt,
+    updatedAt: props.updatedAt
+  });
 
-  const fetching: Function = async () => {
+  const fetching: Function = async (id: string) => {
     try {
       const response: Response = await fetch(
-        "http://localhost:8080/technologies"
+        "http://localhost:8080/technology/" + id
       );
-      const data: Technology[] = await response.json();
-      setTecnologies(data);
+      const data: Technology = await response.json();
+      setTecnology(data);
     } catch (e) {
       console.log(e);
     } finally {
@@ -45,12 +55,12 @@ const Home: React.FC = () => {
   };
 
   useEffect(() => {
-    fetching();
-  }, []);
+    fetching(tech_id);
+  }, [tech_id]);
 
   return (
     <Container maxWidth="lg">
-      <Typography variant="h1">{"Technologies"}</Typography>
+      <Typography variant="h1">{"Technology"}</Typography>
       {loading ? (
         <div className={classes.center}>
           <CircularProgress color="inherit" />
@@ -58,17 +68,15 @@ const Home: React.FC = () => {
       ) : (
         <Grid item xs={12}>
           <Grid container spacing={3} className={classes.grid}>
-            {technologies.map((technology: Technology, i: number) => (
-              <Grid item lg={4} xs={12} key={i}>
-                <CardTechnology
-                  id={technology._id}
-                  name={technology.name}
-                  description={technology.description}
-                  logo={technology.logo}
-                  tags={technology.tags}
-                />
-              </Grid>
-            ))}
+            <Grid item xs={12}>
+              <CardTechnology
+                id={technology._id}
+                name={technology.name}
+                description={technology.description}
+                logo={technology.logo}
+                tags={technology.tags}
+              />
+            </Grid>
           </Grid>
         </Grid>
       )}
@@ -76,4 +84,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default TechnologyID;

@@ -37,7 +37,6 @@ const BUTTONS: Button[] = [
 type NavbarProps = TitleProps & RouteComponentProps;
 
 const Navbar: React.FC<NavbarProps> = ({ title, history }) => {
-  console.log(history);
   const [buttons, setButtons] = useState(BUTTONS);
 
   const useStyles = makeStyles((theme: Theme) =>
